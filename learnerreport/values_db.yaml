@@ -1,0 +1,15 @@
+appName: mongo
+namespace: helm
+replicaCount: 1
+container:
+  appName: mongo
+  labelName: mongo
+  port: 27017
+image:
+  repository: mongo
+  tag: "latest"
+service:
+  name: mongo
+  type: ClusterIP
+  port: 27017
+  targetPort: 27017

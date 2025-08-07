@@ -1,0 +1,21 @@
+appName: frontend
+namespace: helm
+replicaCount: 2
+container:
+  appName: frontend
+  labelName: frontend
+  port: 3000
+image:
+  repository: ranyabrkumar/helm-frontend
+  tag: "latest"
+
+env:
+  - name: REACT_APP_API_URL
+    value: "http://backend:3001"
+
+service:
+  name: frontend
+  type: LoadBalancer
+  port: 80
+  targetPort: 3000
+  container_port: 30000

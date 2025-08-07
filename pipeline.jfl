@@ -1,0 +1,50 @@
+pipeline {
+  agent any
+
+  environment {
+    DOCKER_HUB_USER = 'yourDockerHubUsername'
+    IMAGE_TAG = 'latest'
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        git url: 'https://github.com/UnpredictablePrashant/learnerReportCS_backend', branch: 'main'
+      }
+    }
+
+    stage('Build Backend Docker Image') {
+      steps {
+        script {
+          sh 'docker build -t $DOCKER_HUB_USER/learner-backend:$IMAGE_TAG .'
+          sh 'docker push $DOCKER_HUB_USER/learner-backend:$IMAGE_TAG'
+        }
+      }
+    }
+
+    stage('Checkout Frontend') {
+      steps {
+        dir('frontend') {
+          git url: 'https://github.com/UnpredictablePrashant/learnerReportCS_frontend', branch: 'main'
+        }
+      }
+    }
+
+    stage('Build Frontend Docker Image') {
+      steps {
+        dir('frontend') {
+          script {
+            sh 'docker build -t $DOCKER_HUB_USER/learner-frontend:$IMAGE_TAG .'
+            sh 'docker push $DOCKER_HUB_USER/learner-frontend:$IMAGE_TAG'
+          }
+        }
+      }
+    }
+
+    stage('Deploy using Helm') {
+      steps {
+        sh 'helm upgrade --install learnerreport ./learnerreport --values ./learnerreport/values.yaml'
+      }
+    }
+  }
+}
