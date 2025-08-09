@@ -13,3 +13,14 @@ service:
   type: ClusterIP
   port: 27017
   targetPort: 27017
+livenessProbe:
+  enabled: false
+  path: /
+  initialDelaySeconds: 10
+  periodSeconds: 10
+
+readinessProbe:
+  enabled: false
+  path: /
+  initialDelaySeconds: 5
+  periodSeconds: 5
