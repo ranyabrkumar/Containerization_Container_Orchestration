@@ -1,84 +1,103 @@
-# MERN Application Deployment on AWS: Step-by-Step Guide
+# MERN Stack Kubernetes Deployment with HELM and Jenkins CI/CD
 
-## Step 1: Set Up the AWS Environment
+## Overview
 
-- **Install AWS CLI** and configure with your AWS credentials.
-- **Install Boto3** for Python and configure it.
+This project demonstrates the deployment of a **MERN (MongoDB, Express.js, React.js, Node.js)** application using Kubernetes, HELM charts, and Jenkins for CI/CD automation.
 
-## Step 2: Prepare the MERN Application
+The application is split into two repositories:
 
-- **Containerize** frontend and backend using Docker (create a Dockerfile for each).
-- **Build Docker images** for both components.
-- **Create Amazon ECR repositories** and **push images** to ECR.
-
-## Step 3: Version Control
-
-- **Create an AWS CodeCommit repository**.
-- **Push the MERN application source code** to CodeCommit.
-
-## Step 4: Continuous Integration with Jenkins
-
-- **Install Jenkins** on an EC2 instance and configure necessary plugins.
-- **Create Jenkins jobs** to build and push Docker images to ECR.
-- **Set up triggers** for Jenkins jobs on new CodeCommit commits.
-
-## Step 5: Infrastructure as Code (IaC) with Boto3
-
-- **Use Boto3 scripts** to define VPC, subnets, and security groups.
-- **Set up an Auto Scaling Group (ASG)** for the backend.
-- **Create AWS Lambda functions** as needed.
-
-## Step 6: Deploying Backend Services
-
-- **Deploy backend on EC2 instances** within the ASG using Boto3.
-
-## Step 7: Set Up Networking
-
-- **Create an Elastic Load Balancer (ELB)** for the backend ASG.
-- **Configure DNS** using Route 53 or another DNS service.
-
-## Step 8: Deploying Frontend Services
-
-- **Deploy frontend on EC2 instances** using Boto3.
-
-## Step 9: AWS Lambda Deployment
-
-- **Create Lambda functions** for specific tasks (e.g., DB backup).
-- **Store backups in S3** with timestamping.
-
-## Step 10: Kubernetes (EKS) Deployment
-
-- **Create an EKS cluster** using `eksctl` or similar tools.
-- **Deploy the MERN application** on EKS using Helm.
-
-## Step 11: Monitoring and Logging
-
-- **Set up CloudWatch** for monitoring and alarms.
-- **Configure CloudWatch Logs** or another logging solution.
-
-## Step 12: Documentation
-
-- **Document the architecture and deployment process**.
-- **Push all documentation and code to GitHub**.
-
-## Step 13: Final Checks
-
-- **Validate the deployment** to ensure the MERN app is accessible and functional.
+- **Frontend (React)**: [learnerReportCS\_frontend](https://github.com/ranyabrkumar/Containerization_Container_Orchestration/tree/main/frontend)
+- **Backend (Node.js + Express)**: [learnerReportCS\_backend](https://github.com/ranyabrkumar/Containerization_Container_Orchestration/tree/main/backend)
 
 ---
 
-## BONUS: ChatOps Integration
+## Objectives
 
-- **Create SNS topics** for deployment events using Boto3.
-- **Write Lambda functions** to send notifications to SNS.
-- **Integrate SNS with messaging platforms** (Slack, MS Teams, Telegram).
-- **Configure SES** for email notifications.
+- **Kubernetes Deployments**: Create manifests for both frontend and backend.
+- **HELM Chart**: Provide a unified deployment mechanism with configuration flexibility.
+- **Jenkins Pipeline**: Automate build, push, and deployment processes.
 
 ---
 
-## Submission Instructions
+## Prerequisites
 
-- Ensure the assignment is complete.
-- Push code and documentation to a GitHub repository.
-- Share the repository link in a text, Word, or PDF file.
-- Submit the file via Vlearn.
+- Kubernetes Cluster (Minikube, EKS, GKE, AKS, etc.)
+- `kubectl` configured to access the cluster
+- Docker (for image builds)
+- Helm v3
+- Jenkins server with:
+  - Docker access
+  - Kubernetes CLI tools
+  - Credentials for Docker registry & kubeconfig
+
+---
+
+## Project Structure
+
+```
+.
+├── k8s/                   # Raw Kubernetes manifests
+│   ├── backend-deployment.yaml
+│   ├── backend-service.yaml
+│   ├── frontend-deployment.yaml
+│   ├── frontend-service.yaml
+│   
+├── helm/
+│   └── learnerreport/     # HELM chart for unified deployment
+│       ├── Chart.yaml
+│       ├── values.yaml
+│       └── templates/
+├── pipeline.jfl        # Groovy pipeline for CI/CD
+└── README.md
+```
+
+---
+
+## Deployment Workflow
+
+### 1. Docker Image Build
+
+Jenkins builds images for both frontend and backend:
+
+```bash
+docker build -t <registry>/learner-frontend:<tag> ./frontend
+docker build -t <registry>/learner-backend:<tag> ./backend
+docker push <registry>/learner-frontend:<tag>
+docker push <registry>/learner-backend:<tag>
+```
+
+### 2. Deploy with Helm
+
+Install/upgrade the application in Kubernetes:
+
+```bash
+helm create learnerreport
+helm install backend ./learnerreport --values ./learnerreport/values_be.yaml
+helm install frontend ./learnerreport --values ./learnerreport/values_fe.yaml
+helm install mongo ./learnerreport --values ./learnerreport/values_db.yaml
+
+```
+
+---
+
+## Jenkins Pipeline Overview
+
+Stages in `Jenkinsfile`:
+
+1.**Cleanup Workspace** — Clone FE & BE repositories.
+2. **Checkout** — Clone git repositories.
+3. **Build Backend Docker Image** — build and push docker image for backend.
+4. **Build Frontend Docker Image** — build and push docker image for frontend.
+5. **Set kubeconfig** — set kube config.
+6. **Deploy using Helm** - Use Helm to update the deployment.
+
+---
+
+## Verification
+
+- **Frontend**: Access frontend`.
+- **Backend**: Test health endpoint (`/api/health`).
+- **Logs**: `kubectl logs <pod-name>`
+
+---
+
