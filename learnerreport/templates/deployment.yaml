@@ -20,7 +20,7 @@ spec:
       containers:
         - name: {{ .Values.container.appName }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          {{- if .Values.livenessProbe.enabled }}
+          {{- if eq .Values.readinessProbe.enabled true  }}
           livenessProbe:
             httpGet:
               path: {{ .Values.livenessProbe.path }}
@@ -29,7 +29,7 @@ spec:
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           {{- end }}
 
-          {{- if .Values.readinessProbe.enabled }}
+          {{- if eq .Values.readinessProbe.enabled true}}
           readinessProbe:
             httpGet:
               path: {{ .Values.readinessProbe.path }}
@@ -37,6 +37,7 @@ spec:
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           {{- end }}
+
 
           ports:
             - containerPort: {{ .Values.container.port }}
