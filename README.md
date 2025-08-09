@@ -90,6 +90,7 @@ Stages in `Jenkinsfile`:
 4. **Build Frontend Docker Image** — build and push docker image for frontend.
 5. **Set kubeconfig** — set kube config.
 6. **Deploy using Helm** - Use Helm to update the deployment.
+<img width="1103" height="510" alt="helm_deployment_Using_Jenkins" src="https://github.com/user-attachments/assets/35684a30-01b0-41bb-b5f7-346e4cbcb769" />
 
 ---
 
@@ -98,6 +99,25 @@ Stages in `Jenkinsfile`:
 - **Frontend**: Access frontend`.
 - **Backend**: Test health endpoint (`/api/health`).
 - **Logs**: `kubectl logs <pod-name>`
+---
+  **pod details**
+![SVC_details](https://github.com/user-attachments/assets/1b46d3bf-27be-40f5-8860-efe8c4072e24)
+![Pods_details](https://github.com/user-attachments/assets/cac1dbf2-91cb-4185-8132-f905b8abac01)
+![pod_logs](https://github.com/user-attachments/assets/e6de541d-c943-47cf-b076-cc7e76d951d0)
+
+---
+**HELM Chart**
+![helm_chart_deployment_v2](https://github.com/user-attachments/assets/5058726a-4ea0-4318-9ce3-d8f8a748a5fb)
+![helm_chart_deployment](https://github.com/user-attachments/assets/d54ed3b4-78b9-4013-9606-7f9bc2a7ccaa)
+
+---
+**Frontend deployed by K8s**
+<img width="2194" height="1323" alt="frontend_k8s" src="https://github.com/user-attachments/assets/4046b8e1-6668-4df6-a646-6a66678532b4" />
+
+---
+**Frontend deployed by Helm**
+
+![frontend_helm_manual](https://github.com/user-attachments/assets/04f45271-48d6-44e8-876f-d5c940958b7d)
 
 ---
 
