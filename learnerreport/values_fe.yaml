@@ -15,7 +15,7 @@ env:
 
 service:
   name: frontend
-  type: LoadBalancer
+  type: NodePort
   port: 80
   targetPort: 3000
   container_port: 30000
