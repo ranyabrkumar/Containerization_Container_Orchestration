@@ -20,6 +20,15 @@ spec:
       containers:
         - name: {{ .Values.container.appName }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          livenessProbe:
+            httpGet:
+            path: /
+            port: {{  .Values.containerPort }}
+          readinessProbe:
+            httpGet:
+            path: /
+            port: {{  .Values.containerPort }}
+
           ports:
             - containerPort: {{ .Values.container.port }}
           env:
